@@ -1,4 +1,4 @@
-﻿//main.h
+//main.h
 #pragma once
 
 #if defined _M_X64
@@ -21,30 +21,9 @@ inline void Log(const char* fmt, ...) {
     }
 }
 
-static HWND g_gameHwnd = nullptr;
-
 //=========================================================================================================================//
 
 namespace hooks {
-
-    struct EnumData {
-        DWORD processId;
-        HWND window;
-    };
-
-    BOOL CALLBACK FindWindowByProcessId(HWND hwnd, LPARAM lParam) {
-        EnumData& data = *(EnumData*)lParam;
-        DWORD windowProcessId = 0;
-        GetWindowThreadProcessId(hwnd, &windowProcessId);
-
-        // Filter for visible windows belonging to our process
-        if (windowProcessId != data.processId || !IsWindowVisible(hwnd))
-            return TRUE;
-
-        data.window = hwnd;
-        return FALSE; // Stop enumerating
-    }
-
     extern void InitH();
 }
 
@@ -382,20 +361,7 @@ namespace hooks {
 
         //Sleep(4000);
         Log("[hooks] Init starting\n");
-
-
-        // Find the game window by process ID
-        EnumData data = { GetCurrentProcessId(), nullptr };
-        EnumWindows(FindWindowByProcessId, (LPARAM)&data);
-
-        if (!data.window) {
-            Log("[hooks] Failed to find game window.\n");
-            return;
-        }
-
-        g_gameHwnd = data.window;
-        Log("[hooks] Game window found: %p\n", g_gameHwnd);
-
+        
         struct CleanupGuard {
             ~CleanupGuard() { CleanupDummyObjects(); }
         } cleanup;
@@ -404,7 +370,6 @@ namespace hooks {
             Log("[hooks] Failed to create dummy device/swapchain.\n");
             return;
         }
-
 
         MH_STATUS mh;
 
