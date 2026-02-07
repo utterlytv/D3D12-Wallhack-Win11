@@ -1,4 +1,4 @@
-//overlay.h by N7
+//overlay.h by N7 + UtterlyTV(Win11 Fix Applied) 02/07/2026
 
 //#include <windows.h>
 //#include <d3d12.h>
@@ -1173,3 +1173,4 @@ LRESULT CALLBACK NextHook(int code, WPARAM wParam, LPARAM lParam)
 {
     return CallNextHookEx(NULL, code, wParam, lParam);
 }
+
